@@ -17,7 +17,7 @@ Here are some **useful links**:
 #### About me
 
 I'm an Atmospheric Science master's student in my second year of my MSc at UBC. 
-Check out our team's [weather forecast](https://weather.eos.ubc.ca/wxfcst/users/Guest/ubcrs_withicons/index.php?location=3510) for Vancouver! :rain_cloud:
+Check out our team's [weather forecast](https://weather.eos.ubc.ca/wxfcst/users/Guest/ubcrs_withicons/index.php?location=3510) for Vancouver! :cloud: :sunny:
 
 
 
