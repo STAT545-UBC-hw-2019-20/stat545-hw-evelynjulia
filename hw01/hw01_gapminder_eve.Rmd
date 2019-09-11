@@ -1,0 +1,69 @@
+---
+title: "HW 1 - R Markdown for Gapminder Exploration"
+author: "Eve Wicksteed"
+date: "10/09/2019"
+output: 
+  html_document:
+    keep md: true
+    toc: false
+    number_sections: false
+    toc_float: true
+---
+
+
+```{r load, warning=FALSE, echo=FALSE}
+library(gapminder)
+library(tibble)
+library(DT)
+library(ggplot)
+library(ggplot2)
+```
+
+# Gapminder data
+
+We're going to load in the dataset **gapminder** which is available in R. 
+
+```{r gapminder}
+#gapminder
+qplot(lifeExp, data=gapminder, geom = "histogram", binwidth=10)
+
+plot(gapminder$lifeExp, gapminder$year)
+```
+
+## What's in the data?
+```{r names}
+names(gapminder)
+```
+
+## Data summary
+```{r}
+summary(gapminder)
+```
+
+### The mean life expectancy in gapminder dataset
+This is the mean over all countries for all years
+```{r}
+mean(gapminder$lifeExp, na.rm=T)
+```
+
+
+### Africa
+
+These are the summary statistics for Africa:
+
+* population:
+```{r}
+summary(gapminder$pop[gapminder$continent=="Africa"])
+```
+* life expectancy:
+```{r}
+summary(gapminder$lifeExp[gapminder$continent=="Africa"])
+```
+
+* GDP per capita:
+```{r}
+summary(gapminder$gdpPercap[gapminder$continent=="Africa"])
+```
+
+
+
