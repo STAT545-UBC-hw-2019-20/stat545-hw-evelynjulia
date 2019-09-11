@@ -29,21 +29,22 @@ We're going to load in the dataset **gapminder** which is available in R.
 summary(gapminder)
 ```
 
+
 ### What variables do we have?
 ```{r names}
 names(gapminder)
 ```
 
-#### Now looking closer at life expectancy
+
+#### Now looking closer at life expectancy:
 ```{r gapminder_plot}
 
 qplot(lifeExp, data=gapminder, geom = "histogram", binwidth=5, ylab = "count", xlab = "life expectancy", main="Histogram of life expectancy over all the gapminder data")
-
-plot(gapminder$year, gapminder$lifeExp)
 ```
 
-#### The mean life expectancy in gapminder dataset
-This is the mean over all countries for all years
+
+
+This is the mean over all countries for all years:
 ```{r}
 mean(gapminder$lifeExp, na.rm=T)
 ```
