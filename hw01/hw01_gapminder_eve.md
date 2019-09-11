@@ -1,0 +1,79 @@
+---
+title: "HW 1 - R Markdown for Gapminder Exploration"
+author: "Eve Wicksteed"
+date: "10/09/2019"
+output: 
+  html_document:
+    keep md: true
+    toc: false
+    number_sections: false
+    toc_float: true
+---
+
+
+```{r load, warning=FALSE, echo=FALSE}
+library(gapminder)
+library(tibble)
+library(DT)
+library(ggplot2)
+```
+
+# A look at gapminder 
+
+We're going to load in the dataset **gapminder** which is available in R. 
+
+## All about that data
+
+### This is a summary of the data:
+```{r}
+summary(gapminder)
+```
+
+
+### What variables do we have?
+```{r names}
+names(gapminder)
+```
+
+
+#### Now looking closer at life expectancy:
+```{r gapminder_plot}
+
+qplot(lifeExp, data=gapminder, geom = "histogram", binwidth=5, ylab = "count", xlab = "life expectancy", main="Histogram of life expectancy over all the gapminder data")
+```
+
+
+
+This is the mean over all countries for all years:
+```{r}
+mean(gapminder$lifeExp, na.rm=T)
+```
+
+
+## Africa
+
+Now we'll look briefly at gapminder data for Africa.
+```{r}
+plot(gapminder$year[gapminder$continent=="Africa"], gapminder$lifeExp[gapminder$continent=="Africa"], ylab = "life expextancy", xlab = "Year", main="Life expectancy in Africa by year")
+
+```
+
+
+**These are the *summary statistics* for Africa:**
+
+* population:
+```{r}
+summary(gapminder$pop[gapminder$continent=="Africa"])
+```
+* life expectancy:
+```{r}
+summary(gapminder$lifeExp[gapminder$continent=="Africa"])
+```
+
+* GDP per capita:
+```{r}
+summary(gapminder$gdpPercap[gapminder$continent=="Africa"])
+```
+
+
+
