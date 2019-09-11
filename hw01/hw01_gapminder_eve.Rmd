@@ -15,41 +15,50 @@ output:
 library(gapminder)
 library(tibble)
 library(DT)
-library(ggplot)
 library(ggplot2)
 ```
 
-# Gapminder data
+# A look at gapminder 
 
 We're going to load in the dataset **gapminder** which is available in R. 
 
-```{r gapminder}
-#gapminder
-qplot(lifeExp, data=gapminder, geom = "histogram", binwidth=10)
+## All about that data
 
-plot(gapminder$lifeExp, gapminder$year)
-```
-
-## What's in the data?
-```{r names}
-names(gapminder)
-```
-
-## Data summary
+### This is a summary of the data:
 ```{r}
 summary(gapminder)
 ```
 
-### The mean life expectancy in gapminder dataset
+### What variables do we have?
+```{r names}
+names(gapminder)
+```
+
+#### Now looking closer at life expectancy
+```{r gapminder_plot}
+
+qplot(lifeExp, data=gapminder, geom = "histogram", binwidth=5, ylab = "count", xlab = "life expectancy", main="Histogram of life expectancy over all the gapminder data")
+
+plot(gapminder$year, gapminder$lifeExp)
+```
+
+#### The mean life expectancy in gapminder dataset
 This is the mean over all countries for all years
 ```{r}
 mean(gapminder$lifeExp, na.rm=T)
 ```
 
 
-### Africa
+## Africa
 
-These are the summary statistics for Africa:
+Now we'll look briefly at gapminder data for Africa.
+```{r}
+plot(gapminder$year[gapminder$continent=="Africa"], gapminder$lifeExp[gapminder$continent=="Africa"], ylab = "life expextancy", xlab = "Year", main="Life expectancy in Africa by year")
+
+```
+
+
+**These are the *summary statistics* for Africa:**
 
 * population:
 ```{r}
