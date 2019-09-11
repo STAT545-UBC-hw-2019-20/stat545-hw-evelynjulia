@@ -21,7 +21,7 @@ Check out our team's [weather forecast](https://weather.eos.ubc.ca/wxfcst/users/
 
 
 
-Note to self for the course:
+Note to self for the course, and grad school in general:
 
 > And which of you by being anxious can add a single hour to his span of life?
 > 
