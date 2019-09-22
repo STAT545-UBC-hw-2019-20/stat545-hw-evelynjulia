@@ -1,0 +1,73 @@
+---
+title: "`Untitled HW 23"
+author: "Eve Wicksteed"
+date: "22/09/2019"
+output: 
+  html_document:
+    keep md: true
+    toc: false
+    number_sections: false
+    toc_float: true
+---
+
+```{r load, warning=FALSE, echo=FALSE}
+library(gapminder)
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+gapminder
+```
+
+```{r q1.1}
+#Use filter() to subset the gapminder data to three countries of your choice in the 1970’s.
+
+(eves_data <- gapminder %>%
+  filter((country == "South Africa" | country == "Canada" | country == "United Kingdom") & 
+           (year >= 1970 & year <= 1979)))
+
+```
+
+```{r q1.2}
+#Use the pipe operator %>% to select “country” and “gdpPercap” from your filtered dataset in 1.1.
+
+eves_data %>% 
+  select(country, gdpPercap)
+  
+```
+
+
+```{r q1.3}
+# Filter gapminder to all entries that have experienced a drop in life expectancy. 
+# Be sure to include a new variable that’s the increase in life expectancy in your 
+# tibble. Hint: you might find the lag() or diff() functions useful.
+
+
+gapminder %>%
+  mutate(change_lifeExp = lifeExp - first(lifeExp)) %>% 
+  filter(change_lifeExp <0)
+
+
+```
+
+
+
+```{r q1.4}
+# Filter gapminder so that it shows the max GDP per capita experienced by 
+# each country. Hint: you might find the max() function useful here.
+
+gapminder %>%
+  group_by(country) %>% 
+  filter(gdpPercap == max(gdpPercap))
+
+# Filter gapminder to contain six rows: the rows with the three largest GDP per capita, 
+# and the rows with the three smallest GDP per capita. Be sure to not create any intermediate 
+# objects when doing this (with, for example, the assignment operator). Hint: you might find 
+# the sort() function useful, or perhaps even the dplyr::slice() function.
+
+gapminder %>%
+  
+
+
+```
