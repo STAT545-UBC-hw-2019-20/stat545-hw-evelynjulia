@@ -1,10 +1,10 @@
 ---
-title: "`Untitled HW 23"
+title: "HW 2"
 author: "Eve Wicksteed"
 date: "22/09/2019"
 output: 
   html_document:
-    keep md: true
+    keep_md: true
     toc: false
     number_sections: false
     toc_float: true
@@ -20,7 +20,8 @@ library(ggplot2)
 
 Have a look at the gapminder data:
 ```{r}
-gapminder
+DT::datatable(
+gapminder)
 ```
 
 ## Question 1.1
@@ -28,10 +29,11 @@ gapminder
 Use filter() to subset the gapminder data to three countries of your choice in the 1970’s.
 
 ```{r q1.1}
-
+knitr::kable(
 (eves_data <- gapminder %>%
   filter((country == "South Africa" | country == "Canada" | country == "United Kingdom") & 
            (year >= 1970 & year <= 1979)))
+)
 
 ```
 
@@ -41,9 +43,9 @@ Use filter() to subset the gapminder data to three countries of your choice in t
 Use the pipe operator %>% to select “country” and “gdpPercap” from your filtered dataset in 1.1.
 
 ```{r q1.2}
-
+knitr::kable(
 eves_data %>% 
-  select(country, gdpPercap)
+  select(country, gdpPercap))
   
 ```
 
@@ -56,10 +58,11 @@ tibble. Hint: you might find the lag() or diff() functions useful.
 
 ```{r q1.3}
 
+knitr::kable(
 gapminder %>%
   mutate(change_lifeExp = lifeExp - first(lifeExp)) %>% 
   filter(change_lifeExp <0)
-
+)
 
 ```
 
@@ -70,31 +73,11 @@ each country. Hint: you might find the max() function useful here.
 
 ```{r q1.4}
 
-
+DT::datatable(
 gapminder %>%
   group_by(country) %>% 
-  filter(gdpPercap == max(gdpPercap))
+  filter(gdpPercap == max(gdpPercap)))
 
-
-```
-
-
-```{r q1.4_part 2}
-# Filter gapminder to contain six rows: the rows with the three largest GDP per capita, 
-# and the rows with the three smallest GDP per capita. Be sure to not create any intermediate 
-# objects when doing this (with, for example, the assignment operator). Hint: you might find 
-# the sort() function useful, or perhaps even the dplyr::slice() function.
-
-gapminder %>%
-  arrange(desc(gdpPercap)) #%>% 
-  #slice(-4:-n()-3)
-
-gapminder %>%
-  arrange(desc(gdpPercap)) 
-
-
-#%>% 
-  #filter(gdpPercap>)
 
 ```
 
@@ -183,9 +166,54 @@ A scatterplot of two quantitative variables.
 One other plot besides a scatterplot.
 You don’t have to use all the data in every plot! It’s fine to filter down to one country or a small handful of countries.
 
-
+Load in the air quality dataset from r datasets which shows New York air quality measurements
 ```{r}
 library(datasets)
 
+DT::datatable(airquality)
 ```
+
+Plot of temperature vs. ozone
+
+```{r}
+
+airquality %>% 
+  ggplot(aes(Temp, Ozone)) +
+    geom_point(aes(size = Wind), alpha = 0.3) +
+    xlab("Temperature") +
+    ylab("Ozone concentration") +
+    ggtitle("Temperature vs. Ozone concentration in New York")
+```
+
+
+Another plot:
+
+```{r}
+
+
+airquality %>% 
+  ggplot(aes(Ozone)) +
+  geom_density(aes(fill=factor(Month)),alpha=0.8)+ 
+  labs(title="Density plot", 
+       subtitle="Ozone concentrations by month",
+       caption="Source: airquality",
+       x="Ozone concentration",
+       fill="Month")
+
+```
+
+
+## Recycling
+
+For people who want to take things further.
+
+Evaluate this code and describe the result. Presumably the analyst’s intent was to get the data for Rwanda and Afghanistan. Did they succeed? Why or why not? If not, what is the correct way to do this?
+
+
+```{r}
+DT::datatable(filter(gapminder, country == c("Rwanda", "Afghanistan")))
+```
+
+This code does work and produces a table with the data for Rwanda and Afghanistan.Presumably this is because `country == c("Rwanda", "Afghanistan")` evaluated the same as `(country == "Rwanda" | country=="Afghanistan")`, thus data for both countries is returned. 
+
 
