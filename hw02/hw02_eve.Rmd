@@ -55,7 +55,7 @@ Filter gapminder to all entries that have experienced a drop in life expectancy.
 Be sure to include a new variable that’s the increase in life expectancy in your 
 tibble. Hint: you might find the lag() or diff() functions useful.
 
-
+First attempt before class on Tuesday... see later answer. 
 ```{r q1.3}
 
 knitr::kable(
@@ -66,6 +66,7 @@ gapminder %>%
 
 ```
 
+After class on Tuesday (24 Sep):
 ```{r}
 gapminder %>% 
   arrange(year) %>% 
