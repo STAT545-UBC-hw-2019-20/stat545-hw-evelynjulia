@@ -66,6 +66,20 @@ gapminder %>%
 
 ```
 
+```{r}
+gapminder %>% 
+  arrange(year) %>% 
+  group_by(country) %>%
+  mutate(gdpPercap_inc = gdpPercap - lag(gdpPercap)) %>% 
+  filter(gdpPercap_inc < 0)
+
+```
+
+
+
+
+
+
 ## Question 1.4
 
 Filter gapminder so that it shows the max GDP per capita experienced by 
