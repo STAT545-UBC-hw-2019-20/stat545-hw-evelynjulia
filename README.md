@@ -8,7 +8,12 @@ Here you will find my homework assignments for the course STAT 545 at UBC for te
 Here are some **useful links**:
 
 - Homework assignments: 
-    1. [HW 01](https://github.com/STAT545-UBC-hw-2019-20/stat545-hw-evelynjulia/tree/master/hw01)
+(Click on the link to take you to my homework assignment)
+    1. HW 01:
+        - [gapminder exploration](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve.html)
+        - [slides](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve_slides.html#3)
+    2. [HW 02](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw02/hw02_eve.html)
+    3. [HW 03](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw03/hw03_eve.html)
 
 
 - [My STAT 545 participation repo](https://github.com/evelynjulia/STAT545-participation)
