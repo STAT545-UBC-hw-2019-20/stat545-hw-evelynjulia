@@ -8,6 +8,7 @@ Here you will find my homework assignments for the course STAT 545 at UBC for te
 Here are some **useful links**:
 
 - Homework assignments: 
+(Click on the link to take you to my homework assignment)
     1. HW 01:
         - [gapminder exploration](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve.html)
         - [slides](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve_slides.html#3)
