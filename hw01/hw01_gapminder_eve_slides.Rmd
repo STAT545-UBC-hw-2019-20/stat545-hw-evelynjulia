@@ -2,9 +2,10 @@
 title: "HW 1 - R Markdown for Gapminder Exploration - slides"
 author: "Eve Wicksteed"
 date: "11/09/2019"
-output: 
+output:
   ioslides_presentation:
-    keep_md: true
+    keep_md: yes
+  beamer_presentation: default
 ---
 
 
