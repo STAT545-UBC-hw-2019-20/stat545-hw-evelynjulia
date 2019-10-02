@@ -9,6 +9,8 @@ Here are some **useful links**:
 
 - Homework assignments: 
     1. [HW 01](https://github.com/STAT545-UBC-hw-2019-20/stat545-hw-evelynjulia/tree/master/hw01)
+    2. [HW 02]()
+    3. [HW 03](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw03/hw03_eve.html)
 
 
 - [My STAT 545 participation repo](https://github.com/evelynjulia/STAT545-participation)
