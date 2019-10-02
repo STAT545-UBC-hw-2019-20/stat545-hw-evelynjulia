@@ -1,0 +1,146 @@
+---
+title: "HW 03"
+author: "Eve Wicksteed"
+date: "30/09/2019"
+output: 
+  html_document:
+    keep_md: true
+    theme: paper
+---
+
+can change output to `github_document`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(gapminder)
+library(dplyr)
+library(DT)
+library(knitr)
+```
+
+# Instructions
+
+Pick three of the six tasks below, and produce:
+
+- a tibble, using dplyr as your data manipulation tool;
+- an accompanying plot of data from the tibble, using ggplot2 as your visualization tool; and
+- some dialogue about what your tables/figures show (doesn’t have to be much).
+
+# Task Option 2
+Get the maximum and minimum of GDP per capita for all continents.
+
+## Tibble of GDP per capita for all continents
+
+The following table shows the maximum and minimum GDP per capita for all continents in the gapminder dataset. 
+This shows Africa has the lowest minimum GDP per capita and Asia has the highest GDP per capita. This can also be seen in the plot to follow. 
+
+```{r tibble task2}
+gapminder %>% 
+  group_by(continent) %>% 
+  summarize(max_gdpPercap = max(gdpPercap),
+            min_gdpPercap = min(gdpPercap)) %>% 
+  knitr::kable()
+```
+
+## Plot of GDP per capita for all continents
+
+The following plot shows the data from the above table. The plot shows GDP per capita for all values in the original dataset but the highest and lowest GDP per capita for each continent are plotted in red and blue respectively. 
+
+```{r plot task2}
+gapminder %>% 
+  ggplot(aes(x=continent, y= gdpPercap)) +
+  geom_jitter(position = position_jitter(width = 0.3, height = 0), alpha = 1/4) +
+  scale_y_log10(labels = scales::dollar_format()) +
+  stat_summary(fun.y = min, colour = "blue", geom = "point", size = 2) +
+  stat_summary(fun.y = max, colour = "red", geom = "point", size = 2)+
+  labs(title = "GDP per capita for all continents", 
+       x = "Continent", 
+       y = "GDP per capita", 
+       subtitle = "Max and minimum values for all continents")
+
+# plotting min and max from this website:
+# https://github.com/STAT545-UBC/Discussion/issues/133
+  
+```
+
+
+
+
+# Task Option 3
+Look at the spread of GDP per capita within the continents.
+
+## Tibble of the spread of GDP per capita within the continents
+
+The table below shows data for the spread of GDP per capita within the continents of the gapminder dataset. Here we have the mean (mu), the standard deviation (sigma), the maximum (max), the minimum (min), and the range of GDP per capita (range), which is max - min. This data is also visible in the following plot. 
+
+```{r tibble task3}
+gapminder %>% 
+  group_by(continent) %>% 
+  summarize(mu = mean(gdpPercap),
+            sigma = sd(gdpPercap),
+            range = diff(range(gdpPercap)),
+            max = max(gdpPercap),
+            min = min(gdpPercap)) %>% 
+  knitr::kable()
+```
+
+## Plot of the spread of GDP per capita within the continents
+
+The plot below shows the spread of GDP per capita within the continents of the gapminder dataset. This is a box plot. The box and tails show the range of the data for each continent. The interquartile ranges are also visible as the length of the box. The think horizontal line in the box is the mean of the data. And the maximum and minimum values are also clearly visible. 
+
+```{r plot task3}
+gapminder %>% 
+  ggplot(aes(continent, gdpPercap)) +
+  geom_boxplot() +
+  scale_y_log10(labels = scales::dollar_format()) +
+  labs(title = "Spread of GDP per capita for all continents", 
+       x = "Continent", 
+       y = "GDP per capita")
+
+```
+  
+  
+  
+# Task Option 5
+How is life expectancy changing over time on different continents?
+
+## Tibble of how life expectancy is changing over time on different continents
+
+The table below shows the average life expectancy over all countries per year for each continent. The accompanying graph displays the change in life expectancy by year per continent.
+
+```{r tibble task5}
+gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(mu = mean(lifeExp)) %>% 
+  DT::datatable()
+```
+
+## Plot of how life expectancy is changing over time on different continents
+
+The plot below shows the change over time in the country averaged life expectancy for all continents in the gapminder dataset. The plot shows that Oceania has a consistently higher averaged life expactancy than all the other continents, and that Africa's average life expectancy is lower than all the other continents. 
+
+```{r plot task5}
+gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(mu = mean(lifeExp)) %>% 
+  ggplot(aes(x = year, y = mu))+
+  geom_line(aes(group = continent, colour = continent)) +
+  labs(title = "Change of life expectancy with time by continent", 
+       x = "Year", 
+       y = "Country averaged life expectancy")
+
+```
+  
+
+
+
+
+
+
+
+
+
