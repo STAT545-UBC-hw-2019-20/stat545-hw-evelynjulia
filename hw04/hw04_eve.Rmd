@@ -1,0 +1,16 @@
+---
+title: "HW 04"
+author: "Eve Wicksteed"
+date: "30/09/2019"
+output: 
+  html_document:
+    keep_md: true
+    theme: paper
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(singer)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, warning = FALSE, fig.align = "center")
+```
+
