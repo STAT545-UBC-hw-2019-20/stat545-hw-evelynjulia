@@ -1,7 +1,7 @@
 ---
 title: "HW 04"
 author: "Eve Wicksteed"
-date: "30/09/2019"
+date: "04/10/2019"
 output: 
   html_document:
     keep_md: true
@@ -10,7 +10,51 @@ output:
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}
 library(tidyverse)
-library(singer)
+library(gapminder)
+library(dplyr)
+library(DT)
+library(knitr)
 knitr::opts_chunk$set(fig.width=4, fig.height=3, warning = FALSE, fig.align = "center")
 ```
+
+
+```{r allow errors, echo = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+# Univariate data reshaping
+
+Option 2:
+
+Compute life expectancy median for all possible combinations of continent and year. 
+```{r}
+(median <- gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(median_lifeExp = median(lifeExp)))
+```
+
+Then take data and reshape to have one row per year and one variable for each continent.
+```{r}
+(reshaped <- median %>% 
+  pivot_wider(id_cols = year,
+              names_from = continent,
+              values_from = median_lifeExp))
+```
+
+
+Make a plot with this data.
+```{r}
+reshaped %>% 
+  ggplot()
+```
+
+
+
+
+
+
+
+
+
+
 
