@@ -28,17 +28,21 @@ Option 2:
 
 Compute life expectancy median for all possible combinations of continent and year. 
 ```{r}
-(median <- gapminder %>% 
+median <- gapminder %>% 
   group_by(continent, year) %>% 
-  summarize(median_lifeExp = median(lifeExp)))
+  summarize(median_lifeExp = median(lifeExp))
+
+DT::datatable(median)
 ```
 
 Then take data and reshape to have one row per year and one variable for each continent.
 ```{r}
-(reshaped <- median %>% 
+reshaped <- median %>% 
   pivot_wider(id_cols = year,
               names_from = continent,
-              values_from = median_lifeExp))
+              values_from = median_lifeExp)
+
+DT::datatable(reshaped)
 ```
 
 
@@ -56,10 +60,12 @@ reshaped %>%
 
 Relengthen the data:
 ```{r}
-(back_to_norm <- reshaped %>% 
+back_to_norm <- reshaped %>% 
   pivot_longer(cols = -year,
               names_to = "continent",
-              values_to = "Median_lifeExp"))
+              values_to = "Median_lifeExp")
+
+DT::datatable(back_to_norm)
 ```
 
 
@@ -72,30 +78,37 @@ Re-lengthen the data.
 
 Compute the minimum life expectancy and GDP values per continent per year:
 ```{r}
-(minVar <- gapminder %>% 
+minVar <- gapminder %>% 
   group_by(continent, year) %>% 
   summarize(minLifeExp = min(lifeExp),
-            minGDP = min(gdpPercap)))
+            minGDP = min(gdpPercap))
+
+DT::datatable(minVar)
 ```
 
+Reshape that to have one row per year and one variable for each continent-measurement combination:
 ```{r}
-(opt2Wide <- minVar %>% 
+opt2Wide <- minVar %>% 
   pivot_wider(id_cols     = c(year), 
               names_from  = continent, 
               names_sep   = "_", 
-              values_from = c(minLifeExp, minGDP)))
+              values_from = c(minLifeExp, minGDP))
+
+DT::datatable(opt2Wide)
 ```
 
+Re-lengthen the data:
 ```{r}
 (opt2longer <- opt2Wide %>% 
   pivot_longer(cols      = c(-year), 
                names_to  = c(".value", "continent"),
-               names_sep = "_"))
+               names_sep = "_") %>% 
+   DT::datatable())
 ```
 
 # Table joins
 
-```{r}
+```{r echo = FALSE, warning = FALSE, message = FALSE}
 guest <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/attend.csv")
 email <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/emails.csv")
 ```
@@ -105,28 +118,34 @@ Q3.1
 For each guest in the guestlist (guest tibble), add a column for email address, which can be found in the email tibble.
 
 ```{r}
-(allEmail <- email %>% 
-  separate_rows(guest, sep = ",") %>% 
-  rename(name = guest))
+allEmail <- email %>% 
+  separate_rows(guest, sep = ", ") %>% 
+  rename(name = guest)
 
+# needed the sep = "comma space"
 
-(newGuest <- guest %>% 
-  inner_join(allEmail, 
-            by= "name"))
+newGuest <- guest %>% 
+  left_join(allEmail, 
+            by= "name")
 
+DT::datatable(newGuest)
 ```
 
-Who do we have emails for, yet are not on the guestlist?
 
+These are the people we have emails for who are not on the guestlist:
 ```{r}
-newGuest %>% 
-  anti_join(allEmail, by = "email")
+notOnList <- allEmail %>% 
+  anti_join(newGuest, 
+            by = "name")
+
+knitr::kable(notOnList)
 ```
 
 
 Make a guestlist that includes everyone we have emails for (in addition to those on the original guestlist).
 
 ```{r}
-
+bind_rows(newGuest, notOnList) %>% 
+  DT::datatable()
 ```
 
