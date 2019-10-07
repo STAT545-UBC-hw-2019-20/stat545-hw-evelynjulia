@@ -42,19 +42,91 @@ Then take data and reshape to have one row per year and one variable for each co
 ```
 
 
-Make a plot with this data.
+Make a plot with this data:
+Plotting with data in this form isn't actually easier I found. It's easier to plot from the original data set. Unless plotting just for one country. 
 ```{r}
 reshaped %>% 
-  ggplot()
+  ggplot(aes(y = Africa, x = year ))+
+  geom_point()+
+  ggtitle("")+
+  labs(title = "Median life expectancy in Africa over time", 
+       x = "Year", 
+       y = "Life expectancy") 
+```
+
+Relengthen the data:
+```{r}
+(back_to_norm <- reshaped %>% 
+  pivot_longer(cols = -year,
+              names_to = "continent",
+              values_to = "Median_lifeExp"))
 ```
 
 
+# Multivariate data reshaping
+
+Option 2:
+
+Compute some measure of life expectancy and GDP per capita (or two other numeric variables) (mean? median? min? max?) for all possible combinations of continent and year. Reshape that to have one row per year and one variable for each continent-measurement combination. Or the other way around: one row per continent and one variable for each year-measurement combination.
+Re-lengthen the data.
+
+Compute the minimum life expectancy and GDP values per continent per year:
+```{r}
+(minVar <- gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(minLifeExp = min(lifeExp),
+            minGDP = min(gdpPercap)))
+```
+
+```{r}
+(opt2Wide <- minVar %>% 
+  pivot_wider(id_cols     = c(year), 
+              names_from  = continent, 
+              names_sep   = "_", 
+              values_from = c(minLifeExp, minGDP)))
+```
+
+```{r}
+(opt2longer <- opt2Wide %>% 
+  pivot_longer(cols      = c(-year), 
+               names_to  = c(".value", "continent"),
+               names_sep = "_"))
+```
+
+# Table joins
+
+```{r}
+guest <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/attend.csv")
+email <- read_csv("https://raw.githubusercontent.com/STAT545-UBC/Classroom/master/data/wedding/emails.csv")
+```
 
 
+Q3.1 
+For each guest in the guestlist (guest tibble), add a column for email address, which can be found in the email tibble.
+
+```{r}
+(allEmail <- email %>% 
+  separate_rows(guest, sep = ",") %>% 
+  rename(name = guest))
 
 
+(newGuest <- guest %>% 
+  inner_join(allEmail, 
+            by= "name"))
+
+```
+
+Who do we have emails for, yet are not on the guestlist?
+
+```{r}
+newGuest %>% 
+  anti_join(allEmail, by = "email")
+```
 
 
+Make a guestlist that includes everyone we have emails for (in addition to those on the original guestlist).
 
+```{r}
 
+```
 
