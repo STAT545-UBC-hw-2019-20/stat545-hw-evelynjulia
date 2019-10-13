@@ -1,0 +1,301 @@
+---
+title: "HW 05"
+author: "Eve Wicksteed"
+date: "12/10/2019"
+output: 
+  html_document:
+    keep_md: true
+    theme: paper
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(gapminder)
+library(dplyr)
+library(DT)
+library(knitr)
+library(here)
+library(tsibble)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, warning = FALSE, fig.align = "center")
+```
+
+# Exercise 1: Explain the value of the here::here package (10%)
+
+
+The here::here package is useful for multiple reasons. Often people have different operating systems on their computers which can cause problems when setting file paths. For example, Windows uses a backslash ( \ ) where MacOS uses a forwardslash (/). 
+For example, my current working directory is: "Users/Eve/courses/STAT_545/STAT545-participation" but this wouldn't be the same on a Windows computer. 
+
+Here::here is also useful because it makes it easier to use subdirectories. Once can set the subdirectory to run code from without being in that directory. 
+
+
+#Exercise 2: Factor management (20%)
+Task: Choose one dataset (of your choice) and a variable to explore. After ensuring the variable(s) you’re exploring are indeed factors, you should:
+
+## Drop Oceania
+First print the gapminder dataset to see which columns are factors:
+```{r, warning = FALSE, message = FALSE}
+gapminder
+```
+From this I can see that "country" and "continent" are factors. 
+
+I'm going to consider the "continent" factors and I want to drop all data that's associated with Oceania.
+
+We can look at the initial number of continent factors:
+```{r, warning = FALSE, message = FALSE}
+gapminder$continent %>% 
+  nlevels() 
+```
+So we see we have 5 continent factors. 
+We can also check how many rows are in our initial `gapminder` dataset, and we see we have 1704 rows. 
+```{r, warning = FALSE, message = FALSE}
+nrow(gapminder)
+```
+
+
+Then we can create a new dataset (`gconts_dropped`) with all continents except Oceania. And then use `droplevels()` to make sure the unused levels are dropped. 
+```{r, warning = FALSE, message = FALSE}
+(gconts_dropped <- gapminder %>% 
+  filter(continent == c("Asia", "Europe", "Americas", "Africa")) %>% # choose only certain factors (all except Oceania)
+  droplevels()) # drop the unused factors
+```
+
+Finally, we can check how many levels we have in our new `gconts_dropped` dataset, and we see that we now have 4 continent levels / factors. 
+```{r, warning = FALSE, message = FALSE}
+gconts_dropped$continent %>% 
+  nlevels()
+```
+
+If we check the number of rows in our new dataset we see we have 420 rows. This means that we lost 1284 rows that belonged to data for Oceania.
+```{r, warning = FALSE, message = FALSE}
+nrow(gconts_dropped)
+```
+
+## Reorder levels
+
+First we'll continue with our dataset without Oceania. We'll create a summary statistic for the maximum GDP per  capita for each country. 
+```{r, warning = FALSE, message = FALSE}
+(max <- gconts_dropped %>% 
+  group_by(continent, country) %>% 
+  summarize(max_gdp = max(gdpPercap)))
+```
+
+We'll then look at the number of country levels we have and their current order. 
+```{r, warning = FALSE, message = FALSE}
+max$country %>% 
+  nlevels()
+```
+Because it's a lot of countries we'll choose only data for the Americas. So we'll drop all the other country levels.
+And then we'll only have 25 countries to work with. 
+```{r}
+(g_americas <- max %>% 
+  filter(continent == "Americas") %>% # choose only certain factors (all except Oceania)
+  droplevels())
+```
+
+Plot to see the current order of levels:
+```{r, warning = FALSE, message = FALSE}
+g_americas %>%
+  ggplot() +
+  geom_point(aes(country, max_gdp)) +
+  coord_flip() +
+  theme_bw() +
+  ylab("Max GDP per capita") + xlab("Country")
+```
+From the above plot it's easy to see that the country levels are ordered alphabetically.
+
+But we want to change the order so the graph is easier to read. So we'll change the order for countries to be sorted from the country with the lowest GDP per capita to the highest GDP per capita. 
+
+```{r, warning = FALSE, message = FALSE}
+g_americas %>%
+  ggplot() +
+  geom_point(aes(fct_reorder(country, max_gdp, min),max_gdp)) +
+  coord_flip()+
+  theme_bw() +
+  ylab("Max GDP per capita") + xlab("Country")
+```
+
+
+
+# Exercise 3: File input/output (I/O) (20%)
+
+Task: Experiment with at least one of:
+
+write_csv()/read_csv() (and/or TSV friends),
+saveRDS()/readRDS(),
+dput()/dget().
+You are expected to create something new, probably by filtering or grouped-summarization of your dataset (for e.g., Singer, Gapminder, or another dataset), export it to disk and then reload it back in using one of the packages above. You should use here::here() for reading in and writing out.
+
+With the imported data, play around with factor levels and use factors to order your data with one of your factors (i.e. non-alphabetically). For the I/O method(s) you chose, comment on whether or not your newly created file survived the round trip of writing to file then reading back in.
+
+Set the filename and the path using here::here.
+```{r, warning = FALSE, message = FALSE}
+filename <- "daily_alldata.csv"
+path <- here::here("hw05","data", filename)
+```
+
+Read in the CSV file:
+```{r, warning = FALSE, message = FALSE}
+(weather <- read_csv(path, skip=25))
+```
+
+We can convert the values in `Date` to actual dates using `lubridate`.
+```{r}
+weather$Date <- with(weather, lubridate::ymd(Date))
+```
+
+The data is weather data for Vancouver harbour from 2001 to 2019. 
+I now want to drop the coloumns that are all NAs and 
+
+We can now use `group by()` and `summarize()` to refine our dataset and calculate the mean monthly temperature and precipitation for Vancouver Harbour. 
+```{r, warning = FALSE, message = FALSE}
+(weather_mod <- weather %>% 
+  group_by(Year, Month) %>% 
+  summarize(meanMax = mean(`Max Temp (deg C)`, na.rm = TRUE),
+            meanMin = mean(`Min Temp (Deg C)`, na.rm = TRUE),
+            meanPcp = mean(`Total Precip (mm)`, na.rm = TRUE)))
+```
+
+
+
+Then we can set the months as factors so that we can examine monthly patterns and make nice plots. 
+
+```{r, warning = FALSE, message = FALSE}
+(weather_mod_facs <- weather_mod %>% 
+  mutate(Month = factor(case_when(Month == 1 ~ "January",
+                   Month == 2 ~ "February",
+                   Month == 3 ~ "March",
+                   Month == 4 ~ "April",
+                   Month == 5 ~ "May",
+                   Month == 6 ~ "June",
+                   Month == 7 ~ "July",
+                   Month == 8 ~ "August",
+                   Month == 9 ~ "September",
+                   Month == 10 ~ "October",
+                   Month == 11 ~ "November",
+                   Month == 12 ~ "December"),
+         levels = c("January","February","March","April","May","June",
+                    "July","August","September","October","November","December"))))
+```
+
+Then maybe we just want to look at 2018 data:
+```{r, warning = FALSE, message = FALSE}
+(weather2018 <- weather_mod_facs %>% 
+  filter(Year == 2018))
+```
+
+
+Now we can write our modified data out and then read it back in... 
+```{r, warning = FALSE, message = FALSE}
+filename2018 <- "weather2018.csv"
+filename_edits <- "weather_edits.csv"
+
+path2018 <- here::here("hw05","data", filename2018)
+path_edits <- here::here("hw05","data", filename_edits)
+
+write_csv(weather2018, path = path2018)
+write_csv(weather_mod_facs, path = path_edits)
+
+```
+
+Now read the data back in and make plots:
+```{r, warning = FALSE, message = FALSE}
+new_weather_edits <- read_csv(here::here("hw05","data", filename_edits))
+new_weather2018 <- read_csv(here::here("hw05","data", filename2018))
+```
+
+When reading the data back in the factors are lost for our `month` variable. So we need to change month to a factor again. Other than that the data survived being saved to a file and read back in! So that's great because now I have a summarized dataset :)
+```{r, warning = FALSE, message = FALSE}
+(new_weather_edits1 <- new_weather_edits %>% 
+  mutate(Month = factor(Month,
+                        levels = c("January","February","March","April","May","June",
+                                   "July","August","September","October","November","December"))))
+```
+
+```{r, warning = FALSE, message = FALSE}
+(new_weather2018_1 <- new_weather2018 %>% 
+  mutate(Month = factor(Month,
+                        levels = c("January","February","March","April","May","June",
+                                   "July","August","September","October","November","December"))))
+```
+
+Now we can plot monthly average max temp for each month over the years. 
+```{r, warning = FALSE, message = FALSE}
+new_weather_edits1 %>% 
+  ggplot(aes(Year, meanMax)) + 
+  geom_line(aes(group = Month, color = Month)) +
+  labs(y = "Monthly average maximum temperature", x= "Year") +
+  theme_bw()
+```
+
+And then monthly average max temp for each year.
+```{r, warning = FALSE, message = FALSE, fig.width = 5, fig.height = 3}
+new_weather_edits1 %>% 
+  ggplot(aes(Month, meanMax)) + 
+  geom_line(aes(group = Year, color = factor(Year))) +
+  labs(y = "Monthly average maximum temperature", x= "Month", colour = "Year") +
+  theme_bw()
+```
+
+Need to change the factor levels again...
+
+
+
+And for just 2018:
+```{r, warning = FALSE, message = FALSE, fig.width = 5, fig.height = 3}
+new_weather2018_1 %>% 
+  ggplot() + 
+  geom_point(aes(Month, meanMax, colour="mean monthly maximum temp")) +
+  geom_point(aes(Month, meanMin, colour = "mean monthly minimumtemp")) +
+  geom_point(aes(Month, meanPcp, colour = "mean monthly precipitation")) +
+  labs(y = "Monthly average maximum temperature", x= "Month", colour = "Year") +
+  theme_bw()
+```
+
+```{r, warning = FALSE, message = FALSE, fig.width = 5, fig.height = 3}
+new_weather_edits1 %>% 
+  ggplot() + 
+  geom_boxplot(aes(Month, meanMax, group = Month, colour = "Max")) +
+  geom_boxplot(aes(Month, meanMin, group = Month, colour = "Min")) +
+  labs(y = "Monthly average temperature", x= "Year") +
+  theme_bw()
+```
+
+
+
+# Exercise 4: Visualization design (20%)
+
+Go back through your previous assignments and class participation activities and find figures you created prior to the last week of the course. Recreate at least one figure in light of something you learned in the recent class meetings about visualization design and color.
+
+Task: Create a side-by-side plot and juxtapose your first attempt (show the original figure as-is) with a revised attempt after some time spent working on it and implementing principles of effective plotting principles. Comment and reflect on the differences.
+
+```{r, fig.width = 5, fig.height = 2}
+library(cowplot)
+
+plot1 <- ggplot(mpg, aes(cty, hwy)) +
+  geom_jitter(alpha = 0.5, size = 2)+
+  geom_smooth(method=lm)
+
+
+plot2 <- ggplot(mpg, aes(cty, hwy)) +
+  geom_jitter(alpha = 0.5, size = 2)+
+  geom_smooth(method=lm)
+
+plot_grid(plot1, plot2, labels = c("Old plot", "New plot"))
+```
+
+
+
+
+
+# Exercise 5: Writing figures to file (10%)
+
+Task: Use ggsave() to explicitly save a plot to file. Include the exported plot as part of your repository and assignment.
+
+Then, use ![Alt text](/path/to/img.png) to load and embed that file into your report. You can play around with various options, such as:
+
+Arguments of ggsave(), such as width, height, resolution or text scaling.
+Various graphics devices, e.g. a vector vs. raster format.
+Explicit provision of the plot object p via ggsave(..., plot = p). Show a situation in which this actually matters.
+Finishing up and Reflection
+This is your last STAT 545 assignment, but I encourage you not to stop working with R here! Continue exploring datasets - whether they are your datasets, or the thousands of sample datasets on the internet. If you get stuck, there is a tremendous amount of resources out there including open online textbooks R for Data Science, Advanced R for Data Science, the learnr package, and of course, StackOverflow and Google.
+

@@ -1,0 +1,44 @@
+---
+title: "HW 05"
+author: "Eve Wicksteed"
+date: "12/10/2019"
+output: 
+  html_document:
+    keep_md: true
+    theme: paper
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(gapminder)
+library(dplyr)
+library(DT)
+library(knitr)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, warning = FALSE, fig.align = "center")
+```
+
+# Exercise 1: Explain the value of the here::here package (10%)
+
+
+The here::here package is useful for multiple reasons. Often people have different operating systems on their computers which can cause problems when setting file paths. For example, Windows uses a backslash ( \ ) where MacOS uses a forwardslash (/). 
+For example, my current working directory is: "Users/Eve/courses/STAT_545/STAT545-participation" but this wouldn't be the same on a Windows computer. 
+
+Here::here is also useful because it makes it easier to use subdirectories. Once can set the subdirectory to run code from without being in that directory. 
+
+
+#Exercise 2: Factor management (20%)
+Task: Choose one dataset (of your choice) and a variable to explore. After ensuring the variable(s) you’re exploring are indeed factors, you should:
+
+First print the gapminder dataset to see which columns are factors:
+```{r, warning = FALSE, message = FALSE}
+gapminder
+```
+From this I can see that "country" and "continent" are factors. 
+
+From this I'm going to choose 5 countries as factors and drop the other ones that I'm not using
+```{r, warning = FALSE, message = FALSE}
+(gcountries_dropped <- gapminder %>% 
+  filter(country == c("South Africa", "Netherlands", "Canada", "United States", "Zambia")) %>% # choose only certain factors
+  droplevels()) # drop the unused factors
+```
+
