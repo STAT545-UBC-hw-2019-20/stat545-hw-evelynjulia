@@ -268,22 +268,65 @@ Go back through your previous assignments and class participation activities and
 
 Task: Create a side-by-side plot and juxtapose your first attempt (show the original figure as-is) with a revised attempt after some time spent working on it and implementing principles of effective plotting principles. Comment and reflect on the differences.
 
+Here on the left I'm plotting an old plot of mine from home work assignment 2. On the right I've redone the plit using the principles of effective plotting. 
 ```{r, fig.width = 5, fig.height = 2}
 library(cowplot)
 
-plot1 <- ggplot(mpg, aes(cty, hwy)) +
-  geom_jitter(alpha = 0.5, size = 2)+
-  geom_smooth(method=lm)
+plot1 <- gapminder %>% 
+  filter(country =="Canada") %>%
+  ggplot(aes(gdpPercap, lifeExp)) +
+    geom_point() +
+    xlab("GDP per capita") +
+    ylab("Life expectancy") +
+    ggtitle("Life expectancy vs. GDP per capita in Canada")+
+    scale_x_log10()
 
 
-plot2 <- ggplot(mpg, aes(cty, hwy)) +
-  geom_jitter(alpha = 0.5, size = 2)+
-  geom_smooth(method=lm)
+plot2 <- gapminder %>% 
+  filter(country =="Canada") %>%
+  ggplot(aes(gdpPercap, lifeExp)) +
+    geom_point() +
+    xlab("GDP per capita") +
+    ylab("Life expectancy") +
+    ggtitle("Life expectancy vs. GDP per capita in Canada")+
+    scale_x_log10(breaks = c(10000, 15000, 20000, 25000, 30000, 35000))+
+  theme_bw()+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"))
+  
 
-plot_grid(plot1, plot2, labels = c("Old plot", "New plot"))
+
+
+plot_grid(plot1, plot2) #, labels = c("Old plot", "New plot"))
 ```
 
+And lets try improving another plot that's not a line plot:
+```{r, fig.width = 5, fig.height = 2}
+library(cowplot)
 
+plot3 <- ggplot(gapminder, aes(continent)) +
+  geom_bar()+
+  ylab("Count")+
+  xlab("Continent")
+  
+plot4 <- ggplot(gapminder, aes(continent)) +
+  geom_bar(fill = "grey80")+
+  ylab("")+
+  xlab("")+
+  ggtitle("Count of continents in gapminder data")+
+  geom_text(aes(label=..count..),stat="count",position=position_stack(1))+
+  theme_bw()+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.y = element_blank())
+
+
+plot_grid(plot3, plot4) #, labels = c("Old plot", "New plot"))
+```
 
 
 
