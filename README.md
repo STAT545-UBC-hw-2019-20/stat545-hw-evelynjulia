@@ -12,9 +12,10 @@ Here are some **useful links**:
     1. HW 01:
         - [gapminder exploration](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve.html)
         - [slides](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw01/hw01_gapminder_eve_slides.html#3)
-    2. [HW 02](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw02/hw02_eve.html)
-    3. [HW 03](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw03/hw03_eve.html)
-    4. [HW 04](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw04/hw04_eve.html)
+    1. [HW 02](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw02/hw02_eve.html)
+    1. [HW 03](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw03/hw03_eve.html)
+    1. [HW 04](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw04/hw04_eve.html)
+    1. [HW 05](https://stat545-ubc-hw-2019-20.github.io/stat545-hw-evelynjulia/hw05/hw05_eve.html) 
 
 
 - [My STAT 545 participation repo](https://github.com/evelynjulia/STAT545-participation)
